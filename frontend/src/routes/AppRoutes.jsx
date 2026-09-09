@@ -4,6 +4,15 @@ import AdminLayout from '../layouts/AdminLayout';
 import AdminDashboard from '../pages/AdminDashboard';
 import AdminBuildings from '../pages/AdminBuildings';
 import AdminDepartments from '../pages/AdminDepartments';
+import AdminLiveMonitoring from '../pages/AdminLiveMonitoring';
+import AdminEnergyOptimization from '../pages/AdminEnergyOptimization';
+import AdminReports from '../pages/AdminReports';
+import AdminAlerts from '../pages/AdminAlerts';
+import AdminUsers from '../pages/AdminUsers';
+import AdminSensors from '../pages/AdminSensors';
+import AdminSettings from '../pages/AdminSettings';
+import AdminProfile from '../pages/AdminProfile';
+import RoleRoute from './RoleRoute';
 import PlaceholderPage from '../pages/PlaceholderPage';
 
 const AppRoutes = () => {
@@ -20,17 +29,15 @@ const AppRoutes = () => {
         {/* Administrator Pages */}
         <Route path="buildings" element={<AdminBuildings />} />
         <Route path="departments" element={<AdminDepartments />} />
-        
-        {/* Other Module Placeholder Routes */}
-        <Route path="live-monitoring" element={<PlaceholderPage title="Live Energy Monitoring" />} />
+        <Route path="live-monitoring" element={<AdminLiveMonitoring />} />
         <Route path="ai-prediction" element={<PlaceholderPage title="AI Energy Prediction" />} />
-        <Route path="optimization" element={<PlaceholderPage title="Energy Optimization Suggestions" />} />
-        <Route path="reports" element={<PlaceholderPage title="Energy Reports & Analytics" />} />
-        <Route path="alerts" element={<PlaceholderPage title="System Alerts & Warnings" />} />
-        <Route path="users" element={<PlaceholderPage title="User Access Control" />} />
-        <Route path="sensors" element={<PlaceholderPage title="Sensor Management & Diagnostics" />} />
-        <Route path="settings" element={<PlaceholderPage title="System Settings" />} />
-        <Route path="profile" element={<PlaceholderPage title="Administrator Profile" />} />
+        <Route path="optimization" element={<AdminEnergyOptimization />} />
+        <Route path="reports" element={<AdminReports />} />
+        <Route path="alerts" element={<AdminAlerts />} />
+        <Route path="users" element={<RoleRoute allowedRoles={['Administrator']}><AdminUsers /></RoleRoute>} />
+        <Route path="sensors" element={<RoleRoute allowedRoles={['Administrator', 'Electrician / Maintenance Staff']}><AdminSensors /></RoleRoute>} />
+        <Route path="settings" element={<RoleRoute allowedRoles={['Administrator']}><AdminSettings /></RoleRoute>} />
+        <Route path="profile" element={<AdminProfile />} />
       </Route>
 
       {/* Fallback Catch-all Route */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
+import { useAuth } from '../context/AuthContext';
 import './AdminNavbar.css';
 
 const pageTitleMap = {
@@ -20,6 +21,9 @@ const pageTitleMap = {
 
 const AdminNavbar = ({ onToggleSidebar }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, role } = useAuth();
+
   const pageMeta = pageTitleMap[location.pathname] || {
     title: 'Dashboard',
     breadcrumb: 'Home / Dashboard',
@@ -55,6 +59,11 @@ const AdminNavbar = ({ onToggleSidebar }) => {
     return () => clearInterval(interval);
   }, []);
 
+  const getInitial = (name) => {
+    if (!name) return 'A';
+    return name.charAt(0).toUpperCase();
+  };
+
   return (
     <header className="admin-navbar">
       <div className="navbar-left">
@@ -87,13 +96,18 @@ const AdminNavbar = ({ onToggleSidebar }) => {
         </button>
 
         {/* Profile Pill */}
-        <div className="profile-pill">
+        <div
+          className="profile-pill"
+          onClick={() => navigate('/admin/profile')}
+          title="Click to view profile"
+          style={{ cursor: 'pointer' }}
+        >
           <div className="avatar-circle">
-            <span>A</span>
+            <span>{getInitial(user?.name)}</span>
           </div>
           <div className="user-details hide-mobile">
-            <span className="user-name">Admin</span>
-            <span className="user-role">Administrator</span>
+            <span className="user-name">{user?.name || 'Administrator'}</span>
+            <span className="user-role">{role || user?.role || 'Administrator'}</span>
           </div>
           <FiChevronDown className="dropdown-arrow" />
         </div>

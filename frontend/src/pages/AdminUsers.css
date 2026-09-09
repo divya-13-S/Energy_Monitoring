@@ -1,0 +1,237 @@
+/* ====================================================================
+   AdminUsers.css — User Management Module Dashboard Styles
+   Matches existing Admin Dashboard / Reports / Alerts design language
+   ==================================================================== */
+
+.users-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* 1. Header Section */
+.users-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--card-bg, #ffffff);
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--border-color, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.users-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.users-header-icon {
+  font-size: 1.75rem;
+  color: #2563eb;
+}
+
+.users-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-text, #0f172a);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.users-page-subtitle {
+  margin: 0.25rem 0 0 0;
+  color: var(--secondary-text, #64748b);
+  font-size: 0.9rem;
+}
+
+.users-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-add-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-add-user:hover {
+  background: #1d4ed8;
+}
+
+/* 2. KPI Summary Grid */
+.users-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.user-kpi-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: var(--radius-lg, 12px);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--border-color, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.user-kpi-card.total { border-left: 4px solid #4338ca; }
+.user-kpi-card.admin { border-left: 4px solid #7c3aed; }
+.user-kpi-card.hod { border-left: 4px solid #2563eb; }
+.user-kpi-card.electrician { border-left: 4px solid #d97706; }
+.user-kpi-card.active { border-left: 4px solid #16a34a; }
+
+.kpi-icon-box.total { background: #e0e7ff; color: #4338ca; }
+.kpi-icon-box.admin { background: #ede9fe; color: #7c3aed; }
+.kpi-icon-box.hod { background: #dbeafe; color: #2563eb; }
+.kpi-icon-box.electrician { background: #fef3c7; color: #d97706; }
+.kpi-icon-box.active { background: #dcfce7; color: #16a34a; }
+
+/* 3. Filter Section */
+.users-filter-card {
+  background: var(--card-bg, #ffffff);
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--border-color, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+.filter-input-search {
+  padding-left: 2.3rem !important;
+}
+
+/* 4. Users Table */
+.users-table-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--border-color, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.users-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  background: #f8fafc;
+}
+
+.users-table-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-text, #0f172a);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.col-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name-text {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.user-email-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* Role & Status Pills */
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.role-pill.admin { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+.role-pill.hod { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.role-pill.electrician { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+
+.status-pill.user-active { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+.status-pill.user-inactive { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+/* Table Action Buttons */
+.btn-table-action.edit:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #93c5fd;
+}
+
+.btn-table-action.toggle:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.btn-table-action.activate:hover {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+}
+
+.btn-table-action.key:hover {
+  background: #fef9c3;
+  color: #854d0e;
+  border-color: #fef08a;
+}
+
+.scope-disabled-hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-style: italic;
+  padding: 0.5rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px dashed #cbd5e1;
+}

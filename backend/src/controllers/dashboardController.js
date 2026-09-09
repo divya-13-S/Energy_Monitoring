@@ -6,14 +6,18 @@
 import { query, getDbStatus } from '../config/db.js';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
 
-export const getDashboardSummary = async (_req, res) => {
+export const getDashboardSummary = async (req, res) => {
   try {
     let buildingStats = [];
     let deptStats = [];
     let recentReadings = [];
 
+    const isHod = req.user?.role === 'Department Staff (HOD)' || req.user?.role === 'HOD';
+    const userDeptId = req.user?.department_id;
+    const userBldgId = req.user?.building_id;
+
     try {
-      buildingStats = await query(`
+      let bldgSql = `
         SELECT 
           COUNT(*) AS total_buildings,
           COALESCE(SUM(today_energy_kwh), 0) AS total_today_kwh,
@@ -21,17 +25,34 @@ export const getDashboardSummary = async (_req, res) => {
           COALESCE(SUM(estimated_cost), 0) AS total_estimated_cost,
           COALESCE(SUM(current_power_kw), 0) AS total_current_power,
           COALESCE(SUM(active_alerts_count), 0) AS total_active_alerts
-        FROM buildings;
-      `);
+        FROM buildings
+      `;
+      const bldgParams = [];
+      if (isHod && userBldgId) {
+        bldgSql += ` WHERE id = ?`;
+        bldgParams.push(userBldgId);
+      }
+      bldgSql += `;`;
+      buildingStats = await query(bldgSql, bldgParams);
 
-      deptStats = await query(`
+      let deptSql = `
         SELECT 
           COUNT(*) AS total_departments,
           COALESCE(SUM(potential_saving_kwh), 0) AS total_potential_saving_kwh
-        FROM departments;
-      `);
+        FROM departments
+      `;
+      const deptParams = [];
+      if (isHod && userDeptId) {
+        deptSql += ` WHERE id = ?`;
+        deptParams.push(userDeptId);
+      } else if (isHod && userBldgId) {
+        deptSql += ` WHERE building_id = ?`;
+        deptParams.push(userBldgId);
+      }
+      deptSql += `;`;
+      deptStats = await query(deptSql, deptParams);
 
-      recentReadings = await query(`
+      let recentSql = `
         SELECT 
           e.id,
           e.reading_date,
@@ -42,9 +63,17 @@ export const getDashboardSummary = async (_req, res) => {
         FROM energy_consumption e
         JOIN buildings b ON e.building_id = b.id
         LEFT JOIN departments d ON e.department_id = d.id
-        ORDER BY e.reading_date DESC
-        LIMIT 10;
-      `);
+      `;
+      const recentParams = [];
+      if (isHod && userDeptId) {
+        recentSql += ` WHERE e.department_id = ?`;
+        recentParams.push(userDeptId);
+      } else if (isHod && userBldgId) {
+        recentSql += ` WHERE e.building_id = ?`;
+        recentParams.push(userBldgId);
+      }
+      recentSql += ` ORDER BY e.reading_date DESC LIMIT 10;`;
+      recentReadings = await query(recentSql, recentParams);
     } catch (dbErr) {
       console.warn('⚠️  MySQL Query error on /api/dashboard/summary, using calculated defaults:', dbErr.message);
     }

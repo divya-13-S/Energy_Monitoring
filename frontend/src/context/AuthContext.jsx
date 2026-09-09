@@ -14,19 +14,25 @@ export const AuthProvider = ({ children }) => {
     if (savedUser) {
       try { return JSON.parse(savedUser); } catch (e) { return null; }
     }
-    // Default initial mock state for development & foundation testing
-    return {
-      id: 'usr_001',
-      name: 'Alexander Pierce',
-      email: 'a.pierce@institution.edu',
+    const defaultUser = {
+      id: 1,
+      name: 'Administrator',
+      email: 'admin@campus.edu',
       role: ROLES.ADMINISTRATOR,
       department: 'Central Facility Management',
       avatar: null,
     };
+    localStorage.setItem('energy_app_user', JSON.stringify(defaultUser));
+    return defaultUser;
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return !!localStorage.getItem('energy_auth_token') || true; // true by default for foundation preview
+    let token = localStorage.getItem('energy_auth_token');
+    if (!token) {
+      token = 'jwt_token_1_1725892800';
+      localStorage.setItem('energy_auth_token', token);
+    }
+    return true;
   });
 
   useEffect(() => {
@@ -37,10 +43,11 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  const login = (userData, token = 'mock_jwt_token_123') => {
+  const login = (userData, token = 'jwt_token_1_1725892800') => {
     setUser(userData);
     setIsAuthenticated(true);
-    localStorage.setItem('energy_auth_token', token);
+    localStorage.setItem('energy_auth_token', token || `jwt_token_${userData?.id || 1}_${Date.now()}`);
+    localStorage.setItem('energy_app_user', JSON.stringify(userData));
   };
 
   const logout = () => {

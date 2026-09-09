@@ -49,11 +49,14 @@ const formatBuilding = (b) => {
  * GET /api/buildings
  * Returns all 8 campus buildings populated from MySQL
  */
-export const getAllBuildings = async (_req, res) => {
+export const getAllBuildings = async (req, res) => {
   try {
     let rows = [];
+    const isHod = req.user?.role === 'Department Staff (HOD)' || req.user?.role === 'HOD';
+    const userBldgId = req.user?.building_id;
+
     try {
-      rows = await query(`
+      let sql = `
         SELECT 
           b.id,
           b.building_code,
@@ -68,9 +71,14 @@ export const getAllBuildings = async (_req, res) => {
           GROUP_CONCAT(d.code SEPARATOR ' • ') AS units_text
         FROM buildings b
         LEFT JOIN departments d ON b.id = d.building_id
-        GROUP BY b.id
-        ORDER BY b.id ASC;
-      `);
+      `;
+      const params = [];
+      if (isHod && userBldgId) {
+        sql += ` WHERE b.id = ?`;
+        params.push(userBldgId);
+      }
+      sql += ` GROUP BY b.id ORDER BY b.id ASC;`;
+      rows = await query(sql, params);
     } catch (dbErr) {
       console.warn('⚠️  MySQL Query error on /api/buildings, using fallback data:', dbErr.message);
       rows = fallbackBuildings;
@@ -113,6 +121,13 @@ export const getAllBuildings = async (_req, res) => {
 export const getBuildingById = async (req, res) => {
   try {
     const id = req.params.id.replace('bldg_', '');
+    const isHod = req.user?.role === 'Department Staff (HOD)' || req.user?.role === 'HOD';
+    const userBldgId = req.user?.building_id;
+
+    if (isHod && userBldgId && parseInt(id) !== parseInt(userBldgId)) {
+      return sendError(res, 'Access denied. You do not have permission to view other building details.', 403);
+    }
+
     const rows = await query(
       `
       SELECT 

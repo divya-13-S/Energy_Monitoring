@@ -13,9 +13,15 @@ import dashboardRoutes from './src/routes/dashboardRoutes.js';
 import buildingRoutes from './src/routes/buildingRoutes.js';
 import departmentRoutes from './src/routes/departmentRoutes.js';
 import energyRoutes from './src/routes/energyRoutes.js';
+import liveMonitoringRoutes from './src/routes/liveMonitoringRoutes.js';
 import alertRoutes from './src/routes/alertRoutes.js';
 import authRoutes from './src/routes/authRoutes.js';
 import userRoutes from './src/routes/userRoutes.js';
+import optimizationRoutes from './src/routes/optimizationRoutes.js';
+import reportsRoutes from './src/routes/reportsRoutes.js';
+import sensorRoutes from './src/routes/sensorRoutes.js';
+import settingsRoutes from './src/routes/settingsRoutes.js';
+import profileRoutes from './src/routes/profileRoutes.js';
 
 import { errorMiddleware } from './src/middleware/errorMiddleware.js';
 import { loggerMiddleware } from './src/middleware/loggerMiddleware.js';
@@ -52,9 +58,15 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/buildings', buildingRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/energy-consumption', energyRoutes);
+app.use('/api/live-monitoring', liveMonitoringRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/optimization', optimizationRoutes);
+app.use('/api/reports', reportsRoutes);
+app.use('/api/sensors', sensorRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/profile', profileRoutes);
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
 app.use((_req, res) => {
@@ -68,7 +80,7 @@ app.use((_req, res) => {
 app.use(errorMiddleware);
 
 // ─── Start Server & Test MySQL Connection ──────────────────────────────────────
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   console.log(`\n================================================================`);
   console.log(`⚡ Smart Energy API Server running at http://localhost:${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -76,6 +88,16 @@ app.listen(PORT, async () => {
   console.log(`================================================================\n`);
 
   await testDbConnection();
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n❌ PORT ERROR: Port ${PORT} is already occupied by another Node/system process.`);
+    console.error(`👉 Please stop any existing background server process on port ${PORT} before starting a new instance.\n`);
+    process.exit(1);
+  } else {
+    console.error('⚠️  Server startup error:', err);
+  }
 });
 
 export default app;
