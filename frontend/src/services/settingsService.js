@@ -14,17 +14,17 @@ const settingsApiClient = axios.create({
 });
 
 settingsApiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('energy_auth_token') || 'dev_mock_jwt_token_123';
+  const token = localStorage.getItem('energy_auth_token');
   const savedUser = localStorage.getItem('energy_app_user');
-  let role = 'Administrator';
+  let role = '';
   if (savedUser) {
     try {
       const parsed = JSON.parse(savedUser);
-      role = parsed.role || 'Administrator';
+      role = parsed.role || '';
     } catch (e) {}
   }
-  config.headers.Authorization = `Bearer ${token}`;
-  config.headers['X-User-Role'] = role;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (role) config.headers['X-User-Role'] = role;
   return config;
 });
 

@@ -31,3 +31,16 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# ML Data & Datasets
+data/
+*.csv
+*.parquet
+*.db
+
+# Python bytecode & cache
+__pycache__/
+*.pyc
+*.pyo
+
+

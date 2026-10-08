@@ -26,11 +26,11 @@ router.get('/summary', getSummary);
 
 // Base endpoints
 router.get('/', getAllSensors);
-router.post('/', create);
+router.post('/', authorizeRoles('Administrator'), create);
 
 // Parameterized routes
 router.get('/:id', getById);
-router.put('/:id', update);
+router.put('/:id', authorizeRoles('Administrator'), update);
 router.patch('/:id/status', changeStatus);
 router.get('/:id/history', getHistory);
 

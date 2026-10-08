@@ -22,6 +22,7 @@ import reportsRoutes from './src/routes/reportsRoutes.js';
 import sensorRoutes from './src/routes/sensorRoutes.js';
 import settingsRoutes from './src/routes/settingsRoutes.js';
 import profileRoutes from './src/routes/profileRoutes.js';
+import predictionRoutes from './src/routes/predictionRoutes.js';
 
 import { errorMiddleware } from './src/middleware/errorMiddleware.js';
 import { loggerMiddleware } from './src/middleware/loggerMiddleware.js';
@@ -67,6 +68,8 @@ app.use('/api/reports', reportsRoutes);
 app.use('/api/sensors', sensorRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/ai-prediction', predictionRoutes);
+
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
 app.use((_req, res) => {

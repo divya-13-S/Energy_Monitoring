@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   FiGrid,
   FiActivity,
@@ -15,6 +15,7 @@ import {
   FiTool,
   FiRadio,
   FiZap,
+  FiLogOut,
 } from 'react-icons/fi';
 import { useAuth } from '../../../context/AuthContext';
 import './Sidebar.css';
@@ -47,8 +48,14 @@ const navItemsByRole = {
 };
 
 const Sidebar = ({ isCollapsed, isMobileOpen, onCloseMobile }) => {
-  const { role } = useAuth();
+  const { role, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   const currentNav = navItemsByRole[role] || navItemsByRole.Administrator;
 
@@ -104,6 +111,15 @@ const Sidebar = ({ isCollapsed, isMobileOpen, onCloseMobile }) => {
           ) : (
             <span className="system-status-dot centered" />
           )}
+
+          <button
+            className="sidebar-logout-btn"
+            onClick={handleLogout}
+            title={isCollapsed ? 'Logout' : undefined}
+          >
+            <FiLogOut className="logout-icon" />
+            {!isCollapsed && <span className="logout-text">Logout</span>}
+          </button>
         </div>
       </aside>
     </>

@@ -1,52 +1,66 @@
-/* Administrator Main Layout Styles */
+/* Shared & Role Layout Styles (Admin, HOD, Electrician) */
 
-.admin-layout-root {
+.admin-layout-root,
+.layout-root {
   min-height: 100vh;
   width: 100%;
-  background-color: var(--main-bg);
+  background-color: var(--main-bg, #f8fafc);
   display: flex;
+  flex-direction: column;
   position: relative;
   overflow-x: hidden;
 }
 
-.admin-layout-wrapper {
+.layout-body {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+
+.admin-layout-wrapper,
+.layout-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  transition: margin-left var(--transition-normal), width var(--transition-normal);
-  background-color: var(--main-bg);
+  min-height: calc(100vh - var(--navbar-height, 64px));
+  margin-left: var(--sidebar-width, 260px);
+  width: calc(100% - var(--sidebar-width, 260px));
+  transition: margin-left var(--transition-normal, 0.25s ease), width var(--transition-normal, 0.25s ease);
+  background-color: var(--main-bg, #f8fafc);
   box-sizing: border-box;
+  padding: 32px 40px;
 }
 
-.admin-layout-wrapper.sidebar-collapsed {
-  margin-left: var(--sidebar-collapsed-width);
-  width: calc(100% - var(--sidebar-collapsed-width));
+.admin-layout-wrapper.sidebar-collapsed,
+.layout-content.sidebar-collapsed {
+  margin-left: var(--sidebar-collapsed-width, 76px);
+  width: calc(100% - var(--sidebar-collapsed-width, 76px));
 }
 
-.admin-main-content {
+.admin-main-content,
+.content-container {
   flex: 1;
   width: 100%;
-  padding: 32px 40px;
   box-sizing: border-box;
-  background-color: var(--main-bg);
 }
 
 @media (max-width: 1200px) {
-  .admin-main-content {
+  .admin-main-content,
+  .layout-content {
     padding: 24px 28px;
   }
 }
 
 @media (max-width: 992px) {
-  .admin-layout-wrapper {
+  .admin-layout-wrapper,
+  .layout-content {
     margin-left: 0 !important;
     width: 100% !important;
   }
 
-  .admin-main-content {
+  .admin-main-content,
+  .layout-content {
     padding: 20px 16px;
   }
 }

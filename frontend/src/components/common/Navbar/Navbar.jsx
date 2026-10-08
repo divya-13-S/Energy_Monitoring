@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiSun, FiMoon, FiMenu, FiSearch, FiZap, FiLogOut, FiUserCheck } from 'react-icons/fi';
 import { useAuth } from '../../../context/AuthContext';
 import { useTheme } from '../../../context/ThemeContext';
@@ -11,6 +12,12 @@ import './Navbar.css';
 const Navbar = ({ onToggleSidebar, title = 'Smart Energy System' }) => {
   const { user, role, logout, switchRole, ROLES } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <header className="app-navbar">
@@ -99,7 +106,7 @@ const Navbar = ({ onToggleSidebar, title = 'Smart Energy System' }) => {
             </div>
 
             <div className="menu-divider" />
-            <button className="menu-logout-btn" onClick={logout}>
+            <button className="menu-logout-btn" onClick={handleLogout}>
               <FiLogOut /> Logout
             </button>
           </div>

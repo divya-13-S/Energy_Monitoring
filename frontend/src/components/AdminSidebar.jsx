@@ -17,20 +17,21 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from 'react-icons/fi';
+import { useAuth } from '../context/AuthContext';
 import './AdminSidebar.css';
 
 const adminNavItems = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: FiGrid },
-  { label: 'Buildings', path: '/admin/buildings', icon: FiServer },
-  { label: 'Departments', path: '/admin/departments', icon: FiLayers },
+  { label: 'Buildings', path: '/admin/buildings', icon: FiServer, allowedRoles: ['Administrator'] },
+  { label: 'Departments', path: '/admin/departments', icon: FiLayers, allowedRoles: ['Administrator'] },
   { label: 'Live Monitoring', path: '/admin/live-monitoring', icon: FiActivity },
-  { label: 'AI Prediction', path: '/admin/ai-prediction', icon: FiCpu },
-  { label: 'Energy Optimization', path: '/admin/optimization', icon: FiZap },
-  { label: 'Reports', path: '/admin/reports', icon: FiBarChart2 },
+  { label: 'AI Prediction', path: '/admin/ai-prediction', icon: FiCpu, allowedRoles: ['Administrator', 'Department Staff (HOD)'] },
+  { label: 'Energy Optimization', path: '/admin/optimization', icon: FiZap, allowedRoles: ['Administrator', 'Department Staff (HOD)'] },
+  { label: 'Reports', path: '/admin/reports', icon: FiBarChart2, allowedRoles: ['Administrator', 'Department Staff (HOD)'] },
   { label: 'Alerts', path: '/admin/alerts', icon: FiAlertTriangle },
-  { label: 'User Management', path: '/admin/users', icon: FiUsers },
-  { label: 'Sensor Management', path: '/admin/sensors', icon: FiRadio },
-  { label: 'Settings', path: '/admin/settings', icon: FiSettings },
+  { label: 'User Management', path: '/admin/users', icon: FiUsers, allowedRoles: ['Administrator'] },
+  { label: 'Sensor Management', path: '/admin/sensors', icon: FiRadio, allowedRoles: ['Administrator', 'Electrician / Maintenance Staff'] },
+  { label: 'Settings', path: '/admin/settings', icon: FiSettings, allowedRoles: ['Administrator'] },
   { label: 'Profile', path: '/admin/profile', icon: FiUser },
 ];
 
@@ -41,6 +42,11 @@ const AdminSidebar = ({
   onCloseMobile,
   onLogout,
 }) => {
+  const { role } = useAuth();
+  const currentRole = role || 'Administrator';
+  const filteredNavItems = adminNavItems.filter((item) =>
+    item.allowedRoles ? item.allowedRoles.includes(currentRole) : true
+  );
   return (
     <>
       {/* Mobile drawer backdrop */}
@@ -83,7 +89,7 @@ const AdminSidebar = ({
         {/* Navigation List */}
         <nav className="sidebar-nav">
           <ul className="nav-list">
-            {adminNavItems.map((item) => {
+            {filteredNavItems.map((item) => {
               const Icon = item.icon;
               return (
                 <li key={item.label} className="nav-item">

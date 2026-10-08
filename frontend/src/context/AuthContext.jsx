@@ -14,25 +14,13 @@ export const AuthProvider = ({ children }) => {
     if (savedUser) {
       try { return JSON.parse(savedUser); } catch (e) { return null; }
     }
-    const defaultUser = {
-      id: 1,
-      name: 'Administrator',
-      email: 'admin@campus.edu',
-      role: ROLES.ADMINISTRATOR,
-      department: 'Central Facility Management',
-      avatar: null,
-    };
-    localStorage.setItem('energy_app_user', JSON.stringify(defaultUser));
-    return defaultUser;
+    return null;
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    let token = localStorage.getItem('energy_auth_token');
-    if (!token) {
-      token = 'jwt_token_1_1725892800';
-      localStorage.setItem('energy_auth_token', token);
-    }
-    return true;
+    const token = localStorage.getItem('energy_auth_token');
+    const savedUser = localStorage.getItem('energy_app_user');
+    return Boolean(token && savedUser);
   });
 
   useEffect(() => {
@@ -43,10 +31,11 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  const login = (userData, token = 'jwt_token_1_1725892800') => {
+  const login = (userData, token) => {
+    const authToken = token || userData?.token || `jwt_token_${userData?.id || 1}_${Date.now()}`;
     setUser(userData);
     setIsAuthenticated(true);
-    localStorage.setItem('energy_auth_token', token || `jwt_token_${userData?.id || 1}_${Date.now()}`);
+    localStorage.setItem('energy_auth_token', authToken);
     localStorage.setItem('energy_app_user', JSON.stringify(userData));
   };
 
@@ -55,15 +44,23 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     localStorage.removeItem('energy_auth_token');
     localStorage.removeItem('energy_app_user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      sessionStorage.clear();
+    }
   };
 
   // Helper method to dynamically switch roles for testing different role layouts
   const switchRole = (newRole) => {
     if (Object.values(ROLES).includes(newRole)) {
-      setUser((prevUser) => ({
-        ...prevUser,
-        role: newRole,
-      }));
+      setUser((prevUser) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          role: newRole,
+        };
+      });
     }
   };
 

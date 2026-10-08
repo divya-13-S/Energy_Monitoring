@@ -68,7 +68,7 @@ const buildTimeWhereClause = (period = 'today', startDate, endDate, tablePrefix 
  * GET Report Summary KPIs
  */
 export const getReportSummary = async ({ period = 'today', startDate, endDate, buildingId, departmentId }) => {
-  const { clause, params } = buildTimeWhereClause(period, startDate, endDate, '');
+  let { clause, params } = buildTimeWhereClause(period, startDate, endDate, '');
 
   if (buildingId && buildingId !== 'all') {
     clause.includes('WHERE') ? (clause += ' AND building_id = ?') : (clause += ' WHERE building_id = ?');
@@ -114,7 +114,7 @@ export const getReportSummary = async ({ period = 'today', startDate, endDate, b
  * GET Energy Consumption Trend Chart Data
  */
 export const getReportTrend = async ({ period = 'today', startDate, endDate, buildingId, departmentId, reportType }) => {
-  const { clause, params } = buildTimeWhereClause(period, startDate, endDate, 'e');
+  let { clause, params } = buildTimeWhereClause(period, startDate, endDate, 'e');
 
   if (buildingId && buildingId !== 'all') {
     clause += ' AND e.building_id = ?';
@@ -179,7 +179,7 @@ export const getReportTrend = async ({ period = 'today', startDate, endDate, bui
  * GET Building-Wise Consumption Report
  */
 export const getReportBuildings = async ({ period = 'today', startDate, endDate, buildingId, departmentId }) => {
-  const { clause, params } = buildTimeWhereClause(period, startDate, endDate, 'e');
+  let { clause, params } = buildTimeWhereClause(period, startDate, endDate, 'e');
 
   if (buildingId && buildingId !== 'all') {
     clause += ' AND e.building_id = ?';
@@ -364,7 +364,7 @@ export const getReportDetails = async ({
   page = 1,
   limit = 10,
 }) => {
-  const { clause, params } = buildTimeWhereClause(period, startDate, endDate, 'e');
+  let { clause, params } = buildTimeWhereClause(period, startDate, endDate, 'e');
 
   if (buildingId && buildingId !== 'all') {
     clause += ' AND e.building_id = ?';

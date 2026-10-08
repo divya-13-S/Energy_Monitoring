@@ -13,25 +13,27 @@ const axiosInstance = axios.create({
 // Request interceptor to attach JWT auth token & headers
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('energy_auth_token') || 'jwt_token_1_1725892800';
+    const token = localStorage.getItem('energy_auth_token');
     const savedUser = localStorage.getItem('energy_app_user');
-    let role = 'Administrator';
+    let role = '';
     let userDeptId = '';
-    let userId = 1;
+    let userId = '';
 
     if (savedUser) {
       try {
         const parsed = JSON.parse(savedUser);
-        role = parsed.role || 'Administrator';
+        role = parsed.role || '';
         userDeptId = parsed.department_id || '';
-        userId = parsed.id || 1;
+        userId = parsed.id || '';
       } catch (e) {}
     }
 
-    config.headers.Authorization = `Bearer ${token}`;
-    config.headers['X-User-Role'] = role;
-    config.headers['X-User-Dept-Id'] = userDeptId;
-    config.headers['X-User-Id'] = userId;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (role) config.headers['X-User-Role'] = role;
+    if (userDeptId) config.headers['X-User-Dept-Id'] = userDeptId;
+    if (userId) config.headers['X-User-Id'] = userId;
     return config;
   },
   (error) => Promise.reject(error)

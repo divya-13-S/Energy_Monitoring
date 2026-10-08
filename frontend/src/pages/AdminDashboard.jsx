@@ -7,11 +7,13 @@ import {
   FiAlertTriangle,
   FiServer,
 } from 'react-icons/fi';
+import { useAuth } from '../context/AuthContext';
 import KpiCard from '../components/common/KpiCard/KpiCard';
 import { getAdminDashboardKpis } from '../services/dashboardService';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
+  const { user, role } = useAuth();
   const [kpiData, setKpiData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,9 +37,13 @@ const AdminDashboard = () => {
       {/* Welcome Section */}
       <section className="dashboard-welcome-section">
         <div className="welcome-text-wrapper">
-          <h1 className="welcome-title">Welcome back, Admin</h1>
+          <h1 className="welcome-title">Welcome back, {user?.name || 'User'}</h1>
           <p className="welcome-subtitle">
-            Monitor your institution's energy consumption, system performance, and efficiency from one place.
+            {role === 'Electrician / Maintenance Staff'
+              ? 'Monitor electrical health, sensor status, voltage/current telemetry, and active maintenance alerts.'
+              : role === 'Department Staff (HOD)'
+              ? 'Monitor department energy consumption, power telemetry, and optimization opportunities.'
+              : "Monitor your institution's energy consumption, system performance, and efficiency from one place."}
           </p>
         </div>
         <div className="last-updated-badge">

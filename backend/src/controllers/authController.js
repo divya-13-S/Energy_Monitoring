@@ -44,8 +44,8 @@ export const login = async (req, res) => {
       return sendError(res, 'Invalid credentials. Password mismatch.', 401);
     }
 
-    // Verify requested role if specified
-    if (role && role !== user.role && !user.role.includes(role)) {
+    // Verify requested role matches actual database role
+    if (role && role !== user.role) {
       return sendError(res, `Access denied. Account role is "${user.role}".`, 403);
     }
 

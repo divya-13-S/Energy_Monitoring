@@ -16,8 +16,20 @@ import {
 const getScopedIds = (req) => {
   const { building, department } = req.query;
   const isHod = req.user?.role === 'Department Staff (HOD)' || req.user?.role === 'HOD';
-  const buildingId = isHod && req.user?.building_id ? req.user.building_id : building;
-  const departmentId = isHod && req.user?.department_id ? req.user.department_id : department;
+  const userBldg = req.user?.building_id;
+  const userDept = req.user?.department_id;
+
+  // Strict HOD Security Guard
+  if (isHod && userBldg) {
+    if (building && String(building) !== 'all' && String(building) !== String(userBldg)) {
+      const err = new Error('Access denied. HOD users can only access energy optimization data for their assigned building.');
+      err.statusCode = 403;
+      throw err;
+    }
+  }
+
+  const buildingId = isHod && userBldg ? userBldg : building;
+  const departmentId = isHod && userDept ? userDept : department;
   return { buildingId, departmentId };
 };
 
@@ -35,7 +47,7 @@ export const getSummary = async (req, res) => {
     });
     return sendSuccess(res, summary, 'Optimization summary retrieved successfully');
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -53,7 +65,7 @@ export const getHighConsumption = async (req, res) => {
     });
     return sendSuccess(res, areas, `${areas.length} high consumption areas analyzed`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -71,7 +83,7 @@ export const getAnalysis = async (req, res) => {
     });
     return sendSuccess(res, chartData, `${chartData.length} optimization chart data points generated`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -89,7 +101,7 @@ export const getRecommendations = async (req, res) => {
     });
     return sendSuccess(res, recs, `${recs.length} optimization recommendations retrieved`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -106,7 +118,7 @@ export const updateStatus = async (req, res) => {
     const updated = await updateRecommendationStatus(id, status);
     return sendSuccess(res, updated, `Recommendation status updated to "${status}"`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -124,7 +136,7 @@ export const getComparison = async (req, res) => {
     });
     return sendSuccess(res, comparison, `${comparison.length} optimization comparison records generated`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 

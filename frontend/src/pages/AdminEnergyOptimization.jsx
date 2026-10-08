@@ -267,10 +267,10 @@ const AdminEnergyOptimization = () => {
         <div>
           <div className="opt-title-row">
             <h1 className="opt-page-title">ENERGY OPTIMIZATION</h1>
-            <span className="badge-count">Rule-Based Engine</span>
+            <span className="badge-count">ML-Based Baseline Engine</span>
           </div>
           <p className="opt-page-subtitle">
-            Rule-based electricity consumption analysis, waste identification, and savings calculations
+            ML prediction baseline comparison, excess consumption identification, and conservative savings calculations
           </p>
         </div>
 

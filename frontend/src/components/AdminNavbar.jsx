@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
+import { FiMenu, FiBell, FiChevronDown, FiUser, FiLogOut } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import './AdminNavbar.css';
 
@@ -19,10 +19,32 @@ const pageTitleMap = {
   '/admin/profile': { title: 'Profile', breadcrumb: 'Home / Profile' },
 };
 
-const AdminNavbar = ({ onToggleSidebar }) => {
+const AdminNavbar = ({ onToggleSidebar, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, role } = useAuth();
+  const { user, role, logout } = useAuth();
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const handleLogoutAction = () => {
+    setShowProfileMenu(false);
+    if (onLogout) {
+      onLogout();
+    } else {
+      logout();
+      navigate('/login', { replace: true });
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const pageMeta = pageTitleMap[location.pathname] || {
     title: 'Dashboard',
@@ -95,21 +117,90 @@ const AdminNavbar = ({ onToggleSidebar }) => {
           <span className="notification-dot" />
         </button>
 
-        {/* Profile Pill */}
-        <div
-          className="profile-pill"
-          onClick={() => navigate('/admin/profile')}
-          title="Click to view profile"
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="avatar-circle">
-            <span>{getInitial(user?.name)}</span>
+        {/* Profile Pill & Dropdown */}
+        <div className="profile-pill-container" ref={dropdownRef} style={{ position: 'relative' }}>
+          <div
+            className="profile-pill"
+            onClick={() => setShowProfileMenu((prev) => !prev)}
+            title="User menu"
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="avatar-circle">
+              <span>{getInitial(user?.name)}</span>
+            </div>
+            <div className="user-details hide-mobile">
+              <span className="user-name">{user?.name || 'Administrator'}</span>
+              <span className="user-role">{role || user?.role || 'Administrator'}</span>
+            </div>
+            <FiChevronDown className="dropdown-arrow" />
           </div>
-          <div className="user-details hide-mobile">
-            <span className="user-name">{user?.name || 'Administrator'}</span>
-            <span className="user-role">{role || user?.role || 'Administrator'}</span>
-          </div>
-          <FiChevronDown className="dropdown-arrow" />
+
+          {showProfileMenu && (
+            <div className="admin-dropdown-menu" style={{
+              position: 'absolute',
+              right: 0,
+              top: 'calc(100% + 8px)',
+              width: '200px',
+              backgroundColor: 'var(--bg-surface, #ffffff)',
+              border: '1px solid var(--border-color, #e2e8f0)',
+              borderRadius: '8px',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+              zIndex: 1000,
+              padding: '6px 0'
+            }}>
+              <div style={{ padding: '8px 16px', borderBottom: '1px solid var(--border-color, #e2e8f0)' }}>
+                <p style={{ margin: 0, fontWeight: 600, fontSize: '13px', color: 'var(--primary-text, #0f172a)' }}>
+                  {user?.name || 'User'}
+                </p>
+                <p style={{ margin: '2px 0 0 0', fontSize: '11px', color: 'var(--secondary-text, #64748b)' }}>
+                  {user?.email || ''}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  navigate('/admin/profile');
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '13px',
+                  color: 'var(--primary-text, #0f172a)',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <FiUser /> Profile
+              </button>
+              <div style={{ height: '1px', backgroundColor: 'var(--border-color, #e2e8f0)', margin: '4px 0' }} />
+              <button
+                type="button"
+                onClick={handleLogoutAction}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '13px',
+                  color: '#ef4444',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <FiLogOut /> Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

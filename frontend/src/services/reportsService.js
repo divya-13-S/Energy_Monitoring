@@ -17,20 +17,20 @@ const api = axios.create({
 
 // Interceptor to attach auth header & role for backend guard
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('energy_auth_token') || 'dev_mock_jwt_token_123';
+  const token = localStorage.getItem('energy_auth_token');
   const savedUser = localStorage.getItem('energy_app_user');
-  let role = 'Administrator';
+  let role = '';
   let userDeptId = '';
   if (savedUser) {
     try {
       const parsed = JSON.parse(savedUser);
-      role = parsed.role || 'Administrator';
+      role = parsed.role || '';
       userDeptId = parsed.department_id || '';
     } catch (e) {}
   }
-  config.headers.Authorization = `Bearer ${token}`;
-  config.headers['X-User-Role'] = role;
-  config.headers['X-User-Dept-Id'] = userDeptId;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (role) config.headers['X-User-Role'] = role;
+  if (userDeptId) config.headers['X-User-Dept-Id'] = userDeptId;
   return config;
 });
 
@@ -52,8 +52,20 @@ export const fetchReportSummary = async (params = {}) => {
  */
 export const fetchReportTrend = async (params = {}) => {
   try {
-    const response = await api.get('/trend', { params });
-    return response.data?.data || [];
+    const queryParams = typeof params === 'string' ? { period: params } : params;
+    const response = await api.get('/trend', { params: queryParams });
+    const rawData = response.data?.data || [];
+    return rawData.map((item) => {
+      const val = item.energyKwh !== undefined ? Number(item.energyKwh) : (item.kwh !== undefined ? Number(item.kwh) : 0);
+      return {
+        ...item,
+        energyKwh: isNaN(val) ? 0 : val,
+        kwh: isNaN(val) ? 0 : val,
+        cost: item.cost !== undefined ? Number(item.cost) : 0,
+        powerKw: item.powerKw !== undefined ? Number(item.powerKw) : (item.power_kw !== undefined ? Number(item.power_kw) : 0),
+        power_kw: item.powerKw !== undefined ? Number(item.powerKw) : (item.power_kw !== undefined ? Number(item.power_kw) : 0),
+      };
+    });
   } catch (error) {
     console.error('API Error [fetchReportTrend]:', error);
     throw new Error(error.response?.data?.message || 'Failed to fetch report trend data');
@@ -135,8 +147,8 @@ export const downloadCsvReport = (params = {}) => {
       queryParams.append(key, params[key]);
     }
   });
-  const token = localStorage.getItem('energy_auth_token') || 'dev_mock_jwt_token_123';
-  queryParams.append('token', token);
+  const token = localStorage.getItem('energy_auth_token') || '';
+  if (token) queryParams.append('token', token);
   const url = `${API_BASE_URL}/reports/export/csv?${queryParams.toString()}`;
   window.open(url, '_blank');
 };
@@ -151,8 +163,8 @@ export const downloadPdfReport = (params = {}) => {
       queryParams.append(key, params[key]);
     }
   });
-  const token = localStorage.getItem('energy_auth_token') || 'dev_mock_jwt_token_123';
-  queryParams.append('token', token);
+  const token = localStorage.getItem('energy_auth_token') || '';
+  if (token) queryParams.append('token', token);
   const url = `${API_BASE_URL}/reports/export/pdf?${queryParams.toString()}`;
   window.open(url, '_blank');
 };

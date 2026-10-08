@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import AdminSidebar from '../components/AdminSidebar';
 import AdminNavbar from '../components/AdminNavbar';
 import './AdminLayout.css';
@@ -7,6 +8,8 @@ import './AdminLayout.css';
 const AdminLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleToggleSidebar = () => {
     if (window.innerWidth <= 992) {
@@ -17,8 +20,8 @@ const AdminLayout = () => {
   };
 
   const handleLogout = () => {
-    // Placeholder logout handler for frontend state
-    console.log('Logging out administrator...');
+    logout();
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -38,6 +41,7 @@ const AdminLayout = () => {
       >
         <AdminNavbar
           onToggleSidebar={handleToggleSidebar}
+          onLogout={handleLogout}
           title="Dashboard"
           breadcrumb="Home / Dashboard"
         />

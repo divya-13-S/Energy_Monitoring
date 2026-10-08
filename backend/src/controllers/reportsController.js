@@ -19,8 +19,19 @@ import {
 const getScopedIds = (req) => {
   const { building, department } = req.query;
   const isHod = req.user?.role === 'Department Staff (HOD)' || req.user?.role === 'HOD';
-  const buildingId = isHod && req.user?.building_id ? req.user.building_id : building;
-  const departmentId = isHod && req.user?.department_id ? req.user.department_id : department;
+  const userBldg = req.user?.building_id;
+  const userDept = req.user?.department_id;
+
+  if (isHod && userBldg) {
+    if (building && String(building) !== 'all' && String(building) !== String(userBldg)) {
+      const err = new Error('Access denied. HOD users can only access energy reports for their assigned building.');
+      err.statusCode = 403;
+      throw err;
+    }
+  }
+
+  const buildingId = isHod && userBldg ? userBldg : building;
+  const departmentId = isHod && userDept ? userDept : department;
   return { buildingId, departmentId };
 };
 
@@ -41,7 +52,7 @@ export const getSummary = async (req, res) => {
     });
     return sendSuccess(res, summary, 'Report summary retrieved successfully');
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -62,7 +73,7 @@ export const getTrend = async (req, res) => {
     });
     return sendSuccess(res, trend, `${trend.length} report trend data points generated`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -82,7 +93,7 @@ export const getBuildings = async (req, res) => {
     });
     return sendSuccess(res, buildingsData, `${buildingsData.length} building report records generated`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -102,7 +113,7 @@ export const getCost = async (req, res) => {
     });
     return sendSuccess(res, costData, 'Cost analysis report generated');
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -122,7 +133,7 @@ export const getSavings = async (req, res) => {
     });
     return sendSuccess(res, savingsData, 'Energy savings report summary generated');
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -142,7 +153,7 @@ export const getAlerts = async (req, res) => {
     });
     return sendSuccess(res, alertsData, 'Alerts report summary generated');
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -165,7 +176,7 @@ export const getDetails = async (req, res) => {
     });
     return sendSuccess(res, details, `Retrieved ${details.records.length} report detail records (Page ${details.page} of ${details.totalPages})`);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -190,7 +201,7 @@ export const exportCsv = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     return res.status(200).send(csvContent);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 
@@ -210,7 +221,7 @@ export const exportPdf = async (req, res) => {
       reportType,
     }, res);
   } catch (err) {
-    return sendError(res, err.message);
+    return sendError(res, err.message, err.statusCode || 500);
   }
 };
 

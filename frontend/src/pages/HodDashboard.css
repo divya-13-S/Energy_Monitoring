@@ -1,0 +1,482 @@
+/* HodDashboard.css — Professional Enterprise HOD Energy Dashboard Styles */
+
+.hod-dashboard-root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hod-dashboard-loading,
+.hod-dashboard-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  width: 100%;
+}
+
+/* 1. Header / Welcome Banner Card */
+.hod-welcome-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--radius-lg, 12px);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.welcome-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.welcome-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.welcome-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-text, #0f172a);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.scope-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.welcome-description {
+  font-size: 0.875rem;
+  color: var(--secondary-text, #64748b);
+  margin: 0;
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.welcome-actions-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.live-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #16a34a;
+  box-shadow: 0 0 8px rgba(22, 163, 74, 0.6);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.updated-timestamp {
+  font-weight: 400;
+  color: #64748b;
+}
+
+/* 2. KPI Grid (6 Cards) */
+.hod-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 1400px) {
+  .hod-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hod-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .hod-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Common Card Base Component */
+.hod-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--radius-lg, 12px);
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 14px;
+}
+
+.card-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-text, #0f172a);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heading-icon {
+  color: var(--primary-blue, #2563eb);
+  font-size: 1.1rem;
+}
+
+.card-subheading {
+  font-size: 0.75rem;
+  color: var(--secondary-text, #64748b);
+}
+
+/* 3. Analytics Grid (Chart + Breakdown) */
+.hod-analytics-grid {
+  display: grid;
+  grid-template-columns: 1.75fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .hod-analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Trend Chart Component */
+.period-toggle-group {
+  display: inline-flex;
+  background-color: #f1f5f9;
+  padding: 3px;
+  border-radius: 8px;
+  gap: 2px;
+}
+
+.period-btn {
+  border: none;
+  background: transparent;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.period-btn.active {
+  background: #ffffff;
+  color: #2563eb;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+}
+
+.chart-loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+/* Room Breakdown List */
+.zone-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zone-item-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.zone-info-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.zone-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.zone-metrics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zone-kwh {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.fill-warning { background-color: #f59e0b; }
+.fill-success { background-color: #16a34a; }
+.fill-info { background-color: #2563eb; }
+
+.zone-info-bottom {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.zone-share-text {
+  font-size: 0.725rem;
+  color: #64748b;
+}
+
+/* 4. Operations Grid (AI Recommendations + Scope Alerts) */
+.hod-operations-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .hod-operations-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Recommendations Item */
+.recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recommendation-item {
+  padding: 14px 16px;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rec-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.rec-desc {
+  font-size: 0.8rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rec-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.rec-savings-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.savings-icon {
+  font-size: 0.9rem;
+}
+
+/* Scope Alerts Item */
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background-color: #fff8f8;
+  border: 1px solid #fee2e2;
+}
+
+.alert-icon-wrapper {
+  padding-top: 2px;
+}
+
+.alert-status-icon {
+  font-size: 1.1rem;
+}
+
+.alert-status-icon.severity-critical { color: #dc2626; }
+.alert-status-icon.severity-warning { color: #f59e0b; }
+.alert-status-icon.severity-info { color: #2563eb; }
+
+.alert-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.alert-top-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alert-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.alert-time {
+  font-size: 0.725rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+}
+
+.alert-msg {
+  font-size: 0.775rem;
+  color: #475569;
+  margin: 0;
+}
+
+.alert-bottom-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.alert-location {
+  font-size: 0.725rem;
+  color: #64748b;
+}
+
+.no-alerts-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  gap: 8px;
+  text-align: center;
+}
+
+.no-alerts-icon {
+  font-size: 2rem;
+  color: #16a34a;
+}
+
+.no-alerts-text {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* Responsive Overrides */
+@media (max-width: 992px) {
+  .hod-welcome-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .welcome-actions-wrapper {
+    align-items: flex-start;
+    width: 100%;
+  }
+}

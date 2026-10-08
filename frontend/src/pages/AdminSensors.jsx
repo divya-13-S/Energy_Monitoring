@@ -31,6 +31,7 @@ import {
   getSensorHistory,
 } from '../services/sensorService';
 
+import { useAuth } from '../context/AuthContext';
 import EmptyState from '../components/common/EmptyState/EmptyState';
 import ErrorState from '../components/common/ErrorState/ErrorState';
 import './AdminSensors.css';
@@ -98,6 +99,9 @@ const PARAMETERS_LIST = [
 const STATUS_OPTIONS = ['Online', 'Offline', 'Maintenance'];
 
 const AdminSensors = () => {
+  const { role } = useAuth();
+  const isElectrician = role === 'Electrician / Maintenance Staff';
+
   // Filter & Search State
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBuilding, setSelectedBuilding] = useState('all');
@@ -426,9 +430,11 @@ const AdminSensors = () => {
             <FiRefreshCw className={refreshing ? 'spin-icon' : ''} />
             <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
           </button>
-          <button className="btn-add-sensor" onClick={handleOpenAddModal}>
-            <FiPlus /> <span>Add Sensor</span>
-          </button>
+          {!isElectrician && (
+            <button className="btn-add-sensor" onClick={handleOpenAddModal}>
+              <FiPlus /> <span>Add Sensor</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -677,13 +683,15 @@ const AdminSensors = () => {
                             <FiActivity />
                           </button>
 
-                          <button
-                            className="btn-action btn-action-edit"
-                            onClick={() => handleOpenEditModal(sensor)}
-                            title="Edit Sensor Configuration"
-                          >
-                            <FiEdit />
-                          </button>
+                          {!isElectrician && (
+                            <button
+                              className="btn-action btn-action-edit"
+                              onClick={() => handleOpenEditModal(sensor)}
+                              title="Edit Sensor Configuration"
+                            >
+                              <FiEdit />
+                            </button>
+                          )}
 
                           {sensor.status === 'Online' ? (
                             <button

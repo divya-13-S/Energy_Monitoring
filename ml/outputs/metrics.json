@@ -1,0 +1,21 @@
+{
+    "model_name": "Linear Regression",
+    "dataset": "ASHRAE Great Energy Predictor III (Educational Subset)",
+    "target": "log_meter_reading",
+    "evaluation_metrics": {
+        "MAE_kWh": 174.2473,
+        "RMSE_kWh": 1490.7351,
+        "R2_score": -5.152879,
+        "RMSLE": 0.885252,
+        "mean_actual_kWh": 256.48,
+        "mean_predicted_kWh": 332.39,
+        "min_actual_kWh": 0.0,
+        "max_actual_kWh": 17999.0,
+        "min_predicted_kWh": 0.0,
+        "max_predicted_kWh": 216836.39
+    },
+    "performance": {
+        "training_time_seconds": 2.2735,
+        "prediction_time_seconds": 0.0422
+    }
+}
